@@ -1,7 +1,7 @@
 #!/bin/sh
 
 INPUT_DIR="input"
-OUTPUT_DIR="output"
+OUTPUT_DIR="docs"
 TEMPLATE="template.html"
 STYLE="style.css"
 
