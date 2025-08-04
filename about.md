@@ -1,5 +1,3 @@
-% Home
-
 # Welcome
 
 I am Jay,
@@ -13,7 +11,3 @@ this is a place where i write my thesis, that no one reviews, poetry that no one
 - Reading(only idea of reading i don't usually read)
 - Treating every human interaction like a social experiment(i stole that line from somewhere)
 - Intellectualizing my suffering(the spelling is wrong i guess)
-
-# Posts
-
-- [mirror of self](mirror_of_self_.html) — 2025-08-04

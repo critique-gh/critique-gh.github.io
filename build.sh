@@ -10,23 +10,30 @@ generate_index() {
   INDEX_MD="$INPUT_DIR/index.md"
   echo "% Home" > "$INDEX_MD"
   echo "" >> "$INDEX_MD"
+  cat about.md >> "$INDEX_MD"
+  echo "" >> "$INDEX_MD"
   echo "# Posts" >> "$INDEX_MD"
   echo "" >> "$INDEX_MD"
 
-  for file in "$INPUT_DIR"/*.md; do
-    [ "$file" = "$INDEX_MD" ] && continue
-    filename=$(basename "$file" .md)
-    title=$(grep '^%' "$file" | head -n 1 | sed 's/^% *//')
-    timestamp=$(stat -c %y "$file" 2>/dev/null | cut -d'.' -f1)
-    echo "- [$title]($filename.html) — $timestamp" >> "$INDEX_MD"
-  done
+  # List .md files with modification times, excluding index.md
+  find "$INPUT_DIR" -type f -name '*.md' ! -name 'index.md' \
+    -exec stat -c "%Y %n" {} + \
+    | sort -nr \
+    | while read -r timestamp path; do
+        filename=$(basename "$path" .md)
+        title=$(grep '^%' "$path" | head -n 1 | sed 's/^% *//')
+        [ -z "$title" ] && title="$filename"
+        date=$(date -d @"$timestamp" "+%Y-%m-%d")
+        printf -- "- [%s](%s.html) — %s\n" "$title" "$filename" "$date" >> "$INDEX_MD"
+      done
 }
 
 create_new_post() {
   printf "Enter new post name (without .md): "
   read -r name
   # Escape backslashes and replace spaces with underscores
-  safe_name=$(echo "$name" | tr -d '\\' | tr '[:space:]' '_')
+  safe_name=$(echo "$name" | tr -d '\\' | tr ' ' '_')
+  echo $safe_name
   filepath="$INPUT_DIR/$safe_name.md"
 
   if [ -f "$filepath" ]; then
@@ -40,7 +47,7 @@ create_new_post() {
   echo "# $title" >> "$filepath"
   echo "" >> "$filepath"
   echo "(Write your post below...)" >> "$filepath"
-  ${EDITOR:-vi} "$filepath"
+  ${EDITOR:-nvim} "$filepath"
   echo "Created: $filepath"
 }
 
